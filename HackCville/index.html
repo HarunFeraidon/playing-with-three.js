@@ -1,0 +1,123 @@
+
+<!doctype html>
+
+<html>
+
+<head>
+  <title> HackCville</title>
+
+  <style>
+    body{
+      margin:0;
+      padding:0;
+    }
+  </style>
+
+  <script src="libraries/three.min.js"></script>
+  <script src="libraries/jquery-3.2.1.min.js"></script>
+  <script src="libraries/OrbitControls.js"></script>
+
+  <script>
+    $(function(){
+      var scene, camera, renderer;
+      var model;
+      var W = window.innerWidth;
+      var H = window.innerHeight;
+
+      init();
+
+      function init(){
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, W/H, .1, 10000);
+        //camera.position.z=800
+        renderer = new THREE.WebGLRenderer({
+          canvas: document.getElementById('canvas'),
+          antialias: true
+        });
+
+        renderer.setSize(W,H);
+        renderer.setClearColor(0xd1e2ff);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        var controls = new THREE.OrbitControls(
+          camera,
+          document.getElementById("canvas")
+        );
+        controls.target.set(0,0,-600);
+        controls.maxDistance = 900;
+        controls.minDistance = 200;
+
+        window.addEventListener('resize', function(){
+          var W = window.innerWidth;
+          var H = window.innerHeight;
+          renderer.setSize(W,H);
+          camera.aspect = W/H;
+          camera.updateProjectionMatrix();
+        })
+
+        model = new THREE.Group();
+        scene.add(model);
+
+        draw();
+        drawText();
+        requestAnimationFrame(animate)
+        render();
+      }
+
+      function draw(){
+        var circle = new THREE.CylinderGeometry( 250, 250, 25, 90);
+        var darkBlue = new THREE.MeshBasicMaterial({color:0x6f7bf4});
+        var exterior = new THREE.Mesh(circle, darkBlue);
+        exterior.position.set(0,0,-600);
+        exterior.rotateX(Math.PI/2);
+
+        model.add(exterior);
+
+        //scene.add(exterior);
+      }
+
+      function drawText(){
+        var loader = new THREE.FontLoader();
+
+        var font = loader.load('libraries/optimer_bold.typeface.json', function(font){
+        var text1 = new THREE.TextGeometry( 'hack', {font: font, size: 130, height: 40, curveSegments: 12, bevelEnabled: false});
+        var white = new THREE.MeshBasicMaterial({color: 0xffffff});
+        var hack = new THREE.Mesh(text1,white);
+        hack.position.set(-180,20,-620);
+        // scene.add(hack);
+
+        var text2 = new THREE.TextGeometry( 'cville', {font: font, size: 130, height: 40, curveSegments: 12, bevelEnabled: false});
+        var cville = new THREE.Mesh(text2,white);
+        cville.position.set(-210,-125,-620);
+        // scene.add(cville);
+
+        model.add(hack);
+        model.add(cville);
+      });
+
+      }
+
+      function render(){
+        renderer.render(scene,camera);
+      }
+
+      function animate(){
+        var angle=.0;
+        angle+=.01;
+
+        //exterior.rotation.x+=.01;
+        //model.rotateX(angle);
+
+        requestAnimationFrame(animate);
+        render();
+      }
+
+    })
+  </script>
+</head>
+
+<body>
+  <canvas id="canvas"></canvas>
+
+</body>
+</html>

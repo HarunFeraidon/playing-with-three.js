@@ -1,0 +1,398 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Solar System</title>
+  <script src="../libraries/three.min.js"></script>
+  <script src="../libraries/OrbitControls.js"></script>
+  <script src="../libraries/jquery-3.1.1.min.js"></script>
+
+  <style>
+
+    body{
+      margin: 0;
+      padding: 0;
+    }
+
+    #world{
+      background: rgba(0,87,158,1);
+      position: absolute;
+    }
+
+    body:hover{
+      cursor: move;
+    }
+
+    #text{
+      position: absolute;
+      color:white;
+      font-family: arial;
+      left: 25%;
+      right: 25%;
+      top: 15%;
+      font-size: 25px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="world"> </div>
+  <p id="text">
+    Try to name the planets<br /> By the way,
+    try dragging & scrolling to move around.
+  </p>
+
+  <script>
+  $(function(){
+
+    var scene, renderer, camera;
+    var W=window.innerWidth;
+    var H=window.innerHeight;
+    var sun1, sun2;
+    var mercury,mercury1,mercury2;
+    var venus,venus1,venus2;
+    var earth,earth1,earth2;
+    var mars,mars1,mars2;
+    var jupiter,jupiter1,jupiter2;
+    var saturn,saturn1,saturn2;
+    var uranus,uranus1,uranus2;
+    var neptune,neptune1,neptune2;
+    var pluto,pluto1,pluto2;
+    var light1, light2, directional;
+    var particle;
+    var body;
+    var yellow,skin1,skin2,skin3,skin4,skin5,skin6,skin7,skin8,skin9,skin10,
+        skin11,skin12,skin13,skin14,skin14,skin16,skin17,skin18,skin19,skin20;
+
+
+    init();
+
+    function init(){
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, W/H, .1, 20000);
+      camera.position.z = 7000;
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+      });
+      renderer.shadowMap.enabled = true;
+
+      renderer.setSize(W,H);
+      renderer.setClearColor(0x001435);
+      renderer.setPixelRatio(window.devicePixelRatio);
+
+      document.getElementById('world').appendChild(renderer.domElement);
+
+      var controls = new THREE.OrbitControls(
+        camera,
+        renderer.domElement
+      );
+      controls.target.set(0,0,100);
+      controls.maxDistance = 10000;
+      controls.minDistance = 200;
+
+      window.addEventListener("resize", function(){
+        var W = window.innerWidth;
+        var H = window.innerHeight;
+        renderer.setSize(W,H);
+        camera.aspect = W/H;
+        camera.updateProjectionMatrix();
+      })
+
+      createColors();
+
+      addLights();
+      drawObjects();
+
+      directional.target = sun1;
+
+      renderer.render(scene,camera);
+      requestAnimationFrame(spin);
+    }
+
+    function createColors(){
+      normal = new THREE.MeshNormalMaterial();
+      skin = new THREE.MeshLambertMaterial({
+        color: 0xd38613,
+        emissive: 0xff9e0c
+      });
+      skin2 = new THREE.MeshLambertMaterial({
+        color: 0x1add4e,
+        emissive: 0xef8f00
+      });
+      skin3 = new THREE.MeshLambertMaterial({
+        color: 0x333333,
+        emissive: 0x999999
+      });
+      skin4 = new THREE.MeshLambertMaterial({
+        color: 0x333333,
+        emissive: 0xaaaaaa
+      });
+      skin5 = new THREE.MeshLambertMaterial({
+        color: 0x8c7719,
+        emissive: 0x999999
+      });
+      skin6 = new THREE.MeshLambertMaterial({
+        color: 0x8c7719,
+        emissive: 0xaaaaaa
+      });
+      skin7 = new THREE.MeshLambertMaterial({
+        color: 0x00ce25,
+        emissive: 0x777777
+      });
+      skin8 = new THREE.MeshLambertMaterial({
+        color: 0x1b88ff,
+        emissive: 0x444444
+      });
+      skin9 = new THREE.MeshLambertMaterial({
+        color: 0xdb893d,
+        emissive: 0x555555
+      });
+      skin10 = new THREE.MeshLambertMaterial({
+        color: 0xdb893d,
+        emissive: 0x222222
+      });
+      skin11 = new THREE.MeshLambertMaterial({
+        color: 0xe0b894,
+        emissive: 0x777777
+      });
+      skin12 = new THREE.MeshLambertMaterial({
+        color: 0xe0b894,
+        emissive: 0x444444
+      });
+      skin13 = new THREE.MeshLambertMaterial({
+        color: 0xbcb689,
+        emissive: 0x777777
+      });
+      skin14 = new THREE.MeshLambertMaterial({
+        color: 0xbcb689,
+        emissive: 0x666666
+      });
+      skin15 = new THREE.MeshLambertMaterial({
+        color: 0x42cef4,
+        emissive: 0x777777
+      });
+      skin16 = new THREE.MeshLambertMaterial({
+        color: 0x42cef4,
+        emissive: 0x444444
+      });
+      skin17 = new THREE.MeshLambertMaterial({
+        color: 0x0036ff,
+        emissive: 0x777777
+      });
+      skin18 = new THREE.MeshLambertMaterial({
+        color: 0x0036ff,
+        emissive: 0x666666
+      });
+
+
+    }
+
+    function spin(){
+      sun1.rotation.x +=.03;
+      sun1.rotation.y +=.02;
+      sun2.rotation.x -=.03;
+      sun2.rotation.y +=.03;
+
+      mercury1.rotation.x +=.03;
+      mercury1.rotation.y +=.02;
+      mercury2.rotation.x -=.03;
+      mercury2.rotation.y +=.03;
+      mercury.rotation.y +=.054;
+
+      venus1.rotation.x +=.03;
+      venus1.rotation.y +=.02;
+      venus2.rotation.x -=.03;
+      venus2.rotation.y +=.03;
+      venus.rotation.y +=.030;
+
+      earth1.rotation.x +=.03;
+      earth1.rotation.y +=.02;
+      earth2.rotation.x -=.03;
+      earth2.rotation.y +=.03;
+      earth.rotation.y +=.015;
+
+      mars1.rotation.x +=.03;
+      mars1.rotation.y +=.02;
+      mars2.rotation.x -=.03;
+      mars2.rotation.y +=.03;
+      mars.rotation.y +=.009;
+
+      jupiter1.rotation.x +=.03;
+      jupiter1.rotation.y +=.02;
+      jupiter2.rotation.x -=.03;
+      jupiter2.rotation.y +=.03;
+      jupiter.rotation.y +=.001;
+
+      saturn1.rotation.x +=.03;
+      saturn1.rotation.y +=.02;
+      saturn2.rotation.x -=.03;
+      saturn2.rotation.y +=.03;
+      saturn.rotation.y +=.003;
+
+      uranus1.rotation.x +=.03;
+      uranus1.rotation.y +=.02;
+      uranus2.rotation.x -=.03;
+      uranus2.rotation.y +=.03;
+      uranus.rotation.y +=.003;
+
+      neptune1.rotation.x +=.03;
+      neptune1.rotation.y +=.02;
+      neptune2.rotation.x -=.03;
+      neptune2.rotation.y +=.03;
+      neptune.rotation.y +=.001;
+
+      particle.rotation.y += 0.0009;
+      particle.rotation.z += 0.0009
+
+      requestAnimationFrame(spin);
+      renderer.render(scene,camera);
+    }
+
+    function addLights(){
+      light2 = new THREE.AmbientLight(0xffffff, .5);
+      scene.add(light2);
+      light1 = new THREE.PointLight(0x993300, .5);
+      scene.add(light1);
+
+      directional = new THREE.DirectionalLight(0xffffff,.2);
+      //directional.position.set(200,100,200);
+      directional.castShadow = true;
+      directional.shadow.camera.left = -150;
+      directional.shadow.camera.right = 150;
+      directional.shadow.camera.top = 140;
+      directional.shadow.camera.bottom = -140;
+      scene.add(directional);
+      // var helper = new THREE.CameraHelper( directional.shadow.camera );
+      // scene.add( helper );
+    }
+
+    function drawObjects(){
+      particle = new THREE.Object3D();
+      scene.add(particle);
+
+      var tetra = new THREE.TetrahedronGeometry(20, 0);
+      for (var i = 0; i < 500; i++) {
+        var mesh = new THREE.Mesh(tetra, normal);
+        mesh.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+        mesh.position.multiplyScalar(90 + (Math.random() * 9000));
+        mesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+        particle.add(mesh);
+      }
+
+      var shape1 = new THREE.IcosahedronGeometry(1000,0);
+      var shape2 = new THREE.IcosahedronGeometry(100,0);
+      var shape3 = new THREE.IcosahedronGeometry(150,0);
+      var shape4 = new THREE.IcosahedronGeometry(200,0);
+      var shape5 = new THREE.IcosahedronGeometry(200,0);
+      var shape6 = new THREE.IcosahedronGeometry(400,0);
+      var shape7 = new THREE.IcosahedronGeometry(400,0);
+      var shape8 = new THREE.IcosahedronGeometry(300,0);
+      var shape9 = new THREE.IcosahedronGeometry(300,0);
+      var shape10 = new THREE.IcosahedronGeometry(200,0);
+
+
+      sun1 = new THREE.Mesh(shape1,skin);
+      sun2 = new THREE.Mesh(shape1,skin2);
+      sun1.position.z=100;
+      sun2.position.z=100;
+      scene.add(sun1);
+      scene.add(sun2);
+
+      mercury = new THREE.Object3D;
+      //mercury.rotation.z = 2 * Math.PI / 3;
+      scene.add(mercury);
+      mercury1 = new THREE.Mesh(shape2,skin3);
+      mercury2 = new THREE.Mesh(shape2,skin4);
+      mercury1.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      mercury2.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      mercury.add(mercury1,mercury2);
+      mercury1.position.set(1400,0,100);
+      mercury2.position.set(1400,0,100);
+
+      venus = new THREE.Object3D;
+      scene.add(venus);
+      venus1 = new THREE.Mesh(shape3,skin5);
+      venus2 = new THREE.Mesh(shape3,skin6);
+      venus1.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      venus2.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      venus.add(venus1,venus2);
+      venus1.position.set(1900,0,100);
+      venus2.position.set(1900,0,100);
+
+      earth = new THREE.Object3D;
+      scene.add(earth);
+      earth1 = new THREE.Mesh(shape4,skin7);
+      earth2 = new THREE.Mesh(shape4,skin8);
+      earth1.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      earth2.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      earth.add(earth1,earth2);
+      earth1.position.set(2400,0,100);
+      earth2.position.set(2400,0,100);
+
+      mars = new THREE.Object3D;
+      scene.add(mars);
+      mars1 = new THREE.Mesh(shape5,skin9);
+      mars2 = new THREE.Mesh(shape5,skin10);
+      mars1.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      mars2.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      mars.add(mars1,mars2);
+      mars1.position.set(3300,0,100);
+      mars2.position.set(3300,0,100);
+
+      jupiter = new THREE.Object3D;
+      scene.add(jupiter);
+      jupiter1 = new THREE.Mesh(shape6,skin11);
+      jupiter2 = new THREE.Mesh(shape6,skin12);
+      jupiter1.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      jupiter2.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      jupiter.add(jupiter1,jupiter2);
+      jupiter1.position.set(-4100,0,100);
+      jupiter2.position.set(-4100,0,100);
+
+      saturn = new THREE.Object3D;
+      scene.add(saturn);
+      saturn1 = new THREE.Mesh(shape7,skin13);
+      saturn2 = new THREE.Mesh(shape7,skin14);
+      saturn1.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      saturn2.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      saturn.add(saturn1,saturn2);
+      saturn1.position.set(5500,0,100);
+      saturn2.position.set(5500,0,100);
+      var ringShape = new THREE.RingGeometry(470,610,32);
+      var ring = new THREE.Mesh(ringShape, skin14);
+      ring.rotation.x = 30;
+      ring.position.set(5500,0,100);
+      saturn.add(ring);
+
+      uranus = new THREE.Object3D;
+      scene.add(uranus);
+      uranus1 = new THREE.Mesh(shape8,skin15);
+      uranus2 = new THREE.Mesh(shape8,skin16);
+      uranus1.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      uranus2.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      uranus.add(uranus1,uranus2);
+      uranus1.position.set(-6600,0,100);
+      uranus2.position.set(-6600,0,100);
+      var ringShape = new THREE.RingGeometry(360,400,32);
+      var ring2 = new THREE.Mesh(ringShape, skin16);
+      ring2.position.set(-6600,0,100);
+      uranus.add(ring2);
+
+      neptune = new THREE.Object3D;
+      scene.add(neptune);
+      neptune1 = new THREE.Mesh(shape9,skin17);
+      neptune2 = new THREE.Mesh(shape9,skin18);
+      neptune1.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      neptune2.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+      neptune.add(neptune1,neptune2);
+      neptune1.position.set(7700,0,100);
+      neptune2.position.set(7700,0,100);
+
+    }
+
+    })
+  </script>
+
+</body>
